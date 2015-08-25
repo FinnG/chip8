@@ -1,6 +1,6 @@
 
 
-SOURCES=cpu.cpp main.cpp
+SOURCES=ram.cpp cpu.cpp main.cpp
 
 default: all
 
