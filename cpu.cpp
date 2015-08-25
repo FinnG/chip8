@@ -277,6 +277,7 @@ void Chip8CPU::n1_is_F(struct Opcode opcode)
         regs.V[opcode.n2] = regs.delay;
         break;
     case 0x0A: /* Fx0A = LD Vx, K */
+        /* TODO: requires input */
         break;
     case 0x15: /* Fx15 = LD DT, Vx */
         regs.delay = regs.V[opcode.n2];
@@ -288,6 +289,7 @@ void Chip8CPU::n1_is_F(struct Opcode opcode)
         I += regs.V[opcode.n2];
         break;
     case 0x29: /* Fx29 = LD F, Vx */
+        I = display.hex_location(regs.V[opcode.n2]);
         break;
     case 0x33: /* Fx33 = LD B, Vx */
         break;

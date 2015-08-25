@@ -11,10 +11,17 @@
 int main()
 {
     Chip8Ram ram;
-    Chip8Display display;
+    Chip8Display display(ram);
     Chip8CPU cpu(ram, display);
-    
-    std::cout << "Ram[0x123] = " << static_cast<int16_t>(ram[0x123]) << std::endl;
+
+    struct Opcode op;
+    op.n1234 = 0x600F;
+    cpu.execute(op);
+    op.n1234 = 0xF029;
+    cpu.execute(op);
+    op.n1234 = 0xD005;
+    cpu.execute(op);
+    display.draw();
     
     return 0;
 }

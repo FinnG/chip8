@@ -1,6 +1,11 @@
 #include "display.hpp"
+#include "ram.hpp"
 
-Chip8Display::Chip8Display()
+#include <cassert>
+#include <cstring>
+
+
+Chip8Display::Chip8Display(Chip8Ram& ram) : ram(ram)
 {
     /* Initialise all pixels to blank */
     for(uint8_t y = 0; y < height; y++) {
@@ -9,7 +14,18 @@ Chip8Display::Chip8Display()
         }
     }
     
-    /* TODO: Copy the hex charset into the correct area of memory */
+    /* Copy the hex charset into the correct area of memory */
+    for(uint8_t i = 0; i < hex_charset.size(); i++) {
+        int16_t location = i * hex_charset[i].size();
+        std::memcpy((void*)&ram[location], (void*)hex_charset[i].data(), hex_charset[i].size());
+        hex_locations[i] = location;
+    }
+}
+
+int16_t Chip8Display::hex_location(int8_t hex_char)
+{
+    assert(hex_char <= 0xF);
+    return hex_locations[hex_char];
 }
 
 void Chip8Display::draw()

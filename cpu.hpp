@@ -14,24 +14,21 @@ struct Registers
 struct Opcode
 {
     union {
-        uint16_t n1234;
-        struct {
-            uint8_t n1 : 4;
-            union {
-                uint16_t n234 : 12;
+        struct  {
+            union  {
                 struct {
-                    uint8_t n2 : 4;
-                    union {
-                        uint8_t n34;
-                        struct {
-                            uint8_t n3 : 4;
-                            uint8_t n4 : 4;
-                        };
-                    };
+                    uint8_t n4 : 4;
+                    uint8_t n3 : 4;
                 };
+                uint8_t n34;
             };
-            
+            uint8_t n2 : 4;
         };
+        struct {
+            uint16_t n234 : 12;
+            uint8_t n1 : 4;
+        };
+        uint16_t n1234;
     };
 };
 
