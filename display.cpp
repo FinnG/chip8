@@ -28,7 +28,7 @@ void Chip8Display::draw()
     endwin();
 }
 
-void Chip8Display::draw_sprite(uint8_t* sprite_start, uint8_t len, uint8_t x, uint8_t y)
+void Chip8Display::draw_sprite(int8_t* sprite_start, uint8_t len, uint8_t x, uint8_t y)
 {
     /* TODO: The spec says sprite drawing must wrap, this just breaks! */
 

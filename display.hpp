@@ -8,7 +8,7 @@ class Chip8Display
 public:
     Chip8Display(void);
     void draw();
-    void draw_sprite(uint8_t* sprite_start, uint8_t len, uint8_t x, uint8_t y);
+    void draw_sprite(int8_t* sprite_start, uint8_t len, uint8_t x, uint8_t y);
 
 private:
     static const int8_t width = 64;

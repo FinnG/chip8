@@ -1,11 +1,13 @@
 /* http://devernay.free.fr/hacks/chip8/C8TECH10.HTM */
 
-#include "cpu.hpp"
-
 #include <functional>
 #include <iostream>
 #include <cassert>
 #include <random>
+
+#include "cpu.hpp"
+#include "ram.hpp"
+#include "display.hpp"
 
 #define V0 regs.V[0x0]
 #define V1 regs.V[0x1]
@@ -27,7 +29,8 @@
 #define SP regs.sp
 #define I  regs.I
 
-Chip8CPU::Chip8CPU()
+Chip8CPU::Chip8CPU(Chip8Ram& ram, Chip8Display& display)
+    : ram(ram), display(display)
 {
     for(int8_t reg : regs.V)
         reg = 0;
@@ -241,8 +244,11 @@ void Chip8CPU::n1_is_D(struct Opcode opcode)
     assert(opcode.n1 == 0xD);
 
     /* Dxyn = DRW Vx, Vy, nibble */
+    uint8_t x = regs.V[opcode.n2];
+    uint8_t y = regs.V[opcode.n3];
+    uint8_t len = opcode.n4;
 
-    /* TODO: need memory for this */
+    display.draw_sprite(&ram[I], len, x, y);
 }
 
 void Chip8CPU::n1_is_E(struct Opcode opcode)

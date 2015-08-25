@@ -35,14 +35,19 @@ struct Opcode
     };
 };
 
+class Chip8Ram;
+class Chip8Display;
+
 class Chip8CPU
 {
 public:
-    Chip8CPU();
+    Chip8CPU(Chip8Ram& ram, Chip8Display& display);
     void execute(struct Opcode opcode);
     
 private:
     struct Registers regs;
+    Chip8Ram& ram;
+    Chip8Display& display;
     
     void unknown_opcode(struct Opcode opcode);
     void n1_is_0(struct Opcode opcode);
