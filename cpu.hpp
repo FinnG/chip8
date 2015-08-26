@@ -48,7 +48,7 @@ private:
     struct Registers regs;
     Chip8Ram& ram;
     Chip8Display& display;
-    uint8_t blocked_on;
+    uint8_t reg_to_set;
     bool blocked;
     
     void unknown_opcode(struct Opcode opcode);
@@ -68,8 +68,4 @@ private:
     void n1_is_D(struct Opcode opcode);
     void n1_is_E(struct Opcode opcode);
     void n1_is_F(struct Opcode opcode);
-
-    void block_until_input(sf::Keyboard::Key key);
-    sf::Keyboard::Key char_to_key(uint8_t c);
-
 };

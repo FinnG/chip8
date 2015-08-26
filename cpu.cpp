@@ -282,9 +282,8 @@ void Chip8CPU::n1_is_F(struct Opcode opcode)
         regs.V[opcode.n2] = regs.delay;
         break;
     case 0x0A: /* Fx0A = LD Vx, K */
-        /* TODO: this instruction is implemented wrong, look at the spec! */
         blocked = true;
-        blocked_on = regs.V[opcode.n2];
+        reg_to_set = opcode.n2;
         break;
     case 0x15: /* Fx15 = LD DT, Vx */
         regs.delay = regs.V[opcode.n2];
@@ -311,41 +310,43 @@ void Chip8CPU::n1_is_F(struct Opcode opcode)
 
 }
 
-sf::Keyboard::Key Chip8CPU::char_to_key(uint8_t c)
-{
-    switch(c) {
-    case 0x0: return sf::Keyboard::Num0;
-    case 0x1: return sf::Keyboard::Num1;
-    case 0x2: return sf::Keyboard::Num2;
-    case 0x3: return sf::Keyboard::Num3;
-    case 0x4: return sf::Keyboard::Num4;
-    case 0x5: return sf::Keyboard::Num5;
-    case 0x6: return sf::Keyboard::Num6;
-    case 0x7: return sf::Keyboard::Num7;
-    case 0x8: return sf::Keyboard::Num8;
-    case 0x9: return sf::Keyboard::Num9;
-    case 0xA: return sf::Keyboard::A;
-    case 0xB: return sf::Keyboard::B;
-    case 0xC: return sf::Keyboard::C;
-    case 0xD: return sf::Keyboard::D;
-    case 0xE: return sf::Keyboard::E;
-    case 0xF: return sf::Keyboard::F;
-    default: return sf::Keyboard::Unknown;
-    }
-}
-
 void Chip8CPU::unknown_opcode(struct Opcode opcode)
 {
-    std::cerr << "Unknown opcode: " << opcode.n1234 << std::endl;
+    std::cerr << "Unknown opcode: 0x" << std::hex << opcode.n1234 << std::endl;
     assert(0);
 }
 
 bool Chip8CPU::is_blocked()
 {
-    if(blocked) {
-        if(sf::Keyboard::isKeyPressed(char_to_key(blocked_on)))
+    if(!blocked)
+        return false;
+
+    std::array<sf::Keyboard::Key, 16> allowed_keys = {
+        sf::Keyboard::Num0,
+        sf::Keyboard::Num1,
+        sf::Keyboard::Num2,
+        sf::Keyboard::Num3,
+        sf::Keyboard::Num4,
+        sf::Keyboard::Num5,
+        sf::Keyboard::Num6,
+        sf::Keyboard::Num7,
+        sf::Keyboard::Num8,
+        sf::Keyboard::Num9,
+        sf::Keyboard::A,
+        sf::Keyboard::B,
+        sf::Keyboard::C,
+        sf::Keyboard::D,
+        sf::Keyboard::E,
+        sf::Keyboard::F,
+    };
+
+    for(uint8_t i = 0; i < allowed_keys.size(); i++) {
+        if(sf::Keyboard::isKeyPressed(allowed_keys[i])) {
             blocked = false;
+            regs.V[reg_to_set] = i;
+        }
     }
     
     return blocked;
 }
+
