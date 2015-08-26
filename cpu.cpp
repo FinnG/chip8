@@ -10,7 +10,7 @@
 #include "cpu.hpp"
 #include "ram.hpp"
 #include "display.hpp"
-
+#include "log.hpp"
 
 
 #define V0 regs.V[0x0]
@@ -79,6 +79,7 @@ void Chip8CPU::n1_is_0(struct Opcode opcode)
     case 0x00E0: /* CLS */
         display.clear();
         PC += 2;
+        break;
     case 0x00EE: /* RET */
         PC = SP;
         SP--;
@@ -386,6 +387,7 @@ struct Opcode Chip8CPU::get_next_instruction()
 {
     struct Opcode op;
     op.n1234 = ram.read_instruction(regs.pc);
+    LOG() << "Read instruction: 0x" << std::hex << op.n1234 << " from addr: 0x" << regs.pc;
     return op;
 }
 

@@ -16,9 +16,11 @@ int main()
     Chip8CPU cpu(ram, display);
 
     /* Write a (very simple!) program into ram */
-    ram.write_instruction(0x200, 0xF00A);
-    ram.write_instruction(0x202, 0xF029);
-    ram.write_instruction(0x204, 0xD005);
+    ram.write_instruction(0x200, 0xF00A); /* Ld char into V0 */
+    ram.write_instruction(0x202, 0xF029); /* Find sprite for char in V0 */
+    ram.write_instruction(0x204, 0x00E0); /* Clear screen */
+    ram.write_instruction(0x206, 0xD005); /* Draw said sprite */
+    ram.write_instruction(0x208, 0x1200); /* Jump to 0x200 */
 
     sf::RenderWindow window(sf::VideoMode(800, 600), "Chip8");
     while(window.isOpen()) {
