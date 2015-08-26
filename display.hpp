@@ -9,6 +9,7 @@ class Chip8Display
 {
 public:
     Chip8Display(Chip8Ram& ram, uint32_t screen_width, uint32_t screen_height);
+    void clear();
     void draw(sf::RenderWindow& window);
     void draw_sprite(int8_t* sprite_start, uint8_t len, uint8_t x, uint8_t y);
     int16_t hex_location(int8_t hex_char);

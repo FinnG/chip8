@@ -7,12 +7,7 @@
 Chip8Display::Chip8Display(Chip8Ram& ram, uint32_t screen_width, uint32_t screen_height)
     : ram(ram), screen_width(screen_width), screen_height(screen_height)
 {
-    /* Initialise all pixels to blank */
-    for(uint8_t y = 0; y < height; y++) {
-        for(uint8_t x = 0; x < width; x++) {
-            pixel_is_set[x][y] = false;
-        }
-    }
+    clear();
 
     /* Initialise all rects to right size and position */
     uint32_t rect_width = screen_width / width;
@@ -30,6 +25,16 @@ Chip8Display::Chip8Display(Chip8Ram& ram, uint32_t screen_width, uint32_t screen
         std::memcpy((void*)&ram[location], (void*)hex_charset[i].data(),
                     hex_charset[i].size());
         hex_locations[i] = location;
+    }
+}
+
+void Chip8Display::clear()
+{
+    /* Initialise all pixels to blank */
+    for(uint8_t y = 0; y < height; y++) {
+        for(uint8_t x = 0; x < width; x++) {
+            pixel_is_set[x][y] = false;
+        }
     }
 }
 

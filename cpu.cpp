@@ -5,6 +5,7 @@
 #include <cassert>
 #include <random>
 #include <thread>
+#include <ctime>
 
 #include "cpu.hpp"
 #include "ram.hpp"
@@ -74,7 +75,7 @@ void Chip8CPU::n1_is_0(struct Opcode opcode)
 {
     switch(opcode.n1234) {
     case 0x00E0: /* CLS */
-        /* TODO */        
+        display.clear();        
     case 0x00EE: /* RET */
         PC = SP;
         SP--;
@@ -237,7 +238,7 @@ void Chip8CPU::n1_is_C(struct Opcode opcode)
 
     /* Cxkk = RND Vx, byte */
     std::mt19937 rng;
-    rng.seed(1234); /* TODO */
+    rng.seed(time(NULL));
     std::uniform_int_distribution<int8_t> int_dist;
     regs.V[opcode.n2] = int_dist(rng) & opcode.n34;
 }
@@ -260,12 +261,11 @@ void Chip8CPU::n1_is_E(struct Opcode opcode)
 
     switch(opcode.n34) {
     case 0x9E: /* Ex9E = SKP Vx */
-        /* TODO: need input for this */
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        if(sf::Keyboard::isKeyPressed(allowed_keys[opcode.n2]))
             PC += 2;
         break;
     case 0xA1: /* ExA1 = SKNP Vx */
-        /* TODO: need input for this */
+        if(sf::Keyboard::isKeyPressed(allowed_keys[opcode.n2]))
         break;
     default:
         unknown_opcode(opcode);
@@ -297,11 +297,28 @@ void Chip8CPU::n1_is_F(struct Opcode opcode)
     case 0x29: /* Fx29 = LD F, Vx */
         I = display.hex_location(regs.V[opcode.n2]);
         break;
-    case 0x33: /* Fx33 = LD B, Vx */
+    case 0x33: { /* Fx33 = LD B, Vx */
+        uint8_t number = opcode.n2;
+        uint8_t units = number % 10;
+        number /= 10;
+        uint8_t tens = number % 10;
+        number /= 10;
+        uint8_t hundreds = number % 10;
+        ram[I] = hundreds;
+        ram[I + 1] = tens;
+        ram[I + 2] = units;
         break;
-    case 0x55: /* Fx55 = LD [I], Vx */
-        break;         
+    }
+    case 0x55: { /* Fx55 = LD [I], Vx */
+        for(uint8_t i = 0; i <= opcode.n2; i++) {
+            ram[I + i] = regs.V[i];
+        }
+        break;  
+    }       
     case 0x65: /* Fx65 = LD Vx, [I] */
+        for(uint8_t i = 0; i <= opcode.n2; i++) {
+            regs.V[i] = ram[I + i];
+        }
         break;         
     default:
         unknown_opcode(opcode);
@@ -320,25 +337,6 @@ bool Chip8CPU::is_blocked()
 {
     if(!blocked)
         return false;
-
-    std::array<sf::Keyboard::Key, 16> allowed_keys = {
-        sf::Keyboard::Num0,
-        sf::Keyboard::Num1,
-        sf::Keyboard::Num2,
-        sf::Keyboard::Num3,
-        sf::Keyboard::Num4,
-        sf::Keyboard::Num5,
-        sf::Keyboard::Num6,
-        sf::Keyboard::Num7,
-        sf::Keyboard::Num8,
-        sf::Keyboard::Num9,
-        sf::Keyboard::A,
-        sf::Keyboard::B,
-        sf::Keyboard::C,
-        sf::Keyboard::D,
-        sf::Keyboard::E,
-        sf::Keyboard::F,
-    };
 
     for(uint8_t i = 0; i < allowed_keys.size(); i++) {
         if(sf::Keyboard::isKeyPressed(allowed_keys[i])) {

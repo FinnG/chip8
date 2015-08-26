@@ -35,7 +35,7 @@ int main()
             continue;
         }
         LOG() << "CPU unblocked, waiting for key 0";
-        op.n1234 = 0xFF0A;
+        op.n1234 = 0xF00A;
         cpu.execute(op);
 
         display.draw(window);
