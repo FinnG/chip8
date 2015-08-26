@@ -4,8 +4,8 @@
 #include <cassert>
 #include <cstring>
 
-Chip8Display::Chip8Display(Chip8Ram& ram)
-    : ram(ram), window(sf::VideoMode(screen_width, screen_height), "Chip8")
+Chip8Display::Chip8Display(Chip8Ram& ram, uint32_t screen_width, uint32_t screen_height)
+    : ram(ram), screen_width(screen_width), screen_height(screen_height)
 {
     /* Initialise all pixels to blank */
     for(uint8_t y = 0; y < height; y++) {
@@ -39,17 +39,8 @@ int16_t Chip8Display::hex_location(int8_t hex_char)
     return hex_locations[hex_char];
 }
 
-void Chip8Display::draw()
+void Chip8Display::draw(sf::RenderWindow& window)
 {
-    if(!window.isOpen())
-        return;
-
-    sf::Event event;
-    while(window.pollEvent(event)) {
-        if(event.type == sf::Event::Closed)
-            window.close();
-    }
-
     window.clear(sf::Color::Black);
     
     for(uint8_t y = 0; y < height; y++) {

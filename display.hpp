@@ -8,19 +8,18 @@ class Chip8Ram;
 class Chip8Display
 {
 public:
-    Chip8Display(Chip8Ram& ram);
-    void draw();
+    Chip8Display(Chip8Ram& ram, uint32_t screen_width, uint32_t screen_height);
+    void draw(sf::RenderWindow& window);
     void draw_sprite(int8_t* sprite_start, uint8_t len, uint8_t x, uint8_t y);
     int16_t hex_location(int8_t hex_char);
 
 private:
     static const int8_t width = 64;
     static const int8_t height = 32;
-    static const uint32_t screen_width = 800;
-    static const uint32_t screen_height = 600;
+    uint32_t screen_width = 800;
+    uint32_t screen_height = 600;
 
     Chip8Ram& ram;
-    sf::RenderWindow window;
     std::array<std::array<bool, height>, width> pixel_is_set;
     std::array<std::array<sf::RectangleShape, height>, width> pixels;
     std::array<int16_t, 16> hex_locations;
