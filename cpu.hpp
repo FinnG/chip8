@@ -44,6 +44,7 @@ public:
     void execute(struct Opcode opcode);
     bool is_blocked();
     struct Opcode get_next_instruction();
+    void update_timers();
     
 private:
     struct Registers regs;
@@ -51,6 +52,9 @@ private:
     Chip8Display& display;
     uint8_t reg_to_set;
     bool blocked;
+
+    sf::Clock clock;
+    uint32_t ms_since_last_tick;
     
     void unknown_opcode(struct Opcode opcode);
     void n1_is_0(struct Opcode opcode);

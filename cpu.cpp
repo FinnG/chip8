@@ -387,7 +387,21 @@ struct Opcode Chip8CPU::get_next_instruction()
 {
     struct Opcode op;
     op.n1234 = ram.read_instruction(regs.pc);
-    LOG() << "Read instruction: 0x" << std::hex << op.n1234 << " from addr: 0x" << regs.pc;
+    LOG() << "Read instruction: 0x" << std::hex << op.n1234
+        << " from addr: 0x" << regs.pc;
     return op;
+}
+
+void Chip8CPU::update_timers()
+{
+    sf::Time time = clock.restart();
+    uint32_t ms = time.asMilliseconds();
+    ms_since_last_tick += ms;
+
+    while(ms_since_last_tick >= 16) {
+        regs.delay -= 1;
+        regs.sound -= 1;
+        ms_since_last_tick -= 16;
+    }
 }
 

@@ -23,12 +23,15 @@ int main()
     ram.write_instruction(0x208, 0x1200); /* Jump to 0x200 */
 
     sf::RenderWindow window(sf::VideoMode(800, 600), "Chip8");
+
     while(window.isOpen()) {
         sf::Event event;
         while(window.pollEvent(event)) {
             if(event.type == sf::Event::Closed)
                 window.close();
         }
+
+        cpu.update_timers();
 
         if(cpu.is_blocked()) {
             continue;
