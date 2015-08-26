@@ -33,7 +33,7 @@
 #define I  regs.I
 
 Chip8CPU::Chip8CPU(Chip8Ram& ram, Chip8Display& display)
-    : ram(ram), display(display)
+    : ram(ram), display(display), blocked(false)
 {
     for(int8_t reg : regs.V)
         reg = 0;
@@ -282,7 +282,9 @@ void Chip8CPU::n1_is_F(struct Opcode opcode)
         regs.V[opcode.n2] = regs.delay;
         break;
     case 0x0A: /* Fx0A = LD Vx, K */
-        block_until_input(char_to_key(regs.V[opcode.n2]));
+        /* TODO: this instruction is implemented wrong, look at the spec! */
+        blocked = true;
+        blocked_on = regs.V[opcode.n2];
         break;
     case 0x15: /* Fx15 = LD DT, Vx */
         regs.delay = regs.V[opcode.n2];
@@ -307,14 +309,6 @@ void Chip8CPU::n1_is_F(struct Opcode opcode)
         break;
     }    
 
-}
-
-void Chip8CPU::block_until_input(sf::Keyboard::Key key)
-{
-    std::cout << "blocking" <<std::endl;
-    while(!sf::Keyboard::isKeyPressed(key)) {
-        std::this_thread::yield();
-    }
 }
 
 sf::Keyboard::Key Chip8CPU::char_to_key(uint8_t c)
@@ -344,4 +338,14 @@ void Chip8CPU::unknown_opcode(struct Opcode opcode)
 {
     std::cerr << "Unknown opcode: " << opcode.n1234 << std::endl;
     assert(0);
+}
+
+bool Chip8CPU::is_blocked()
+{
+    if(blocked) {
+        if(sf::Keyboard::isKeyPressed(char_to_key(blocked_on)))
+            blocked = false;
+    }
+    
+    return blocked;
 }

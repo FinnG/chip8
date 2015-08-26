@@ -7,6 +7,7 @@
 #include "ram.hpp"
 #include "display.hpp"
 #include "cpu.hpp"
+#include "log.hpp"
 
 int main()
 {
@@ -29,6 +30,13 @@ int main()
             if(event.type == sf::Event::Closed)
                 window.close();
         }
+
+        if(cpu.is_blocked()) {
+            continue;
+        }
+        LOG() << "CPU unblocked, waiting for key 0";
+        op.n1234 = 0xFF0A;
+        cpu.execute(op);
 
         display.draw(window);
     }

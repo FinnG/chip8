@@ -42,11 +42,14 @@ class Chip8CPU
 public:
     Chip8CPU(Chip8Ram& ram, Chip8Display& display);
     void execute(struct Opcode opcode);
+    bool is_blocked();
     
 private:
     struct Registers regs;
     Chip8Ram& ram;
     Chip8Display& display;
+    uint8_t blocked_on;
+    bool blocked;
     
     void unknown_opcode(struct Opcode opcode);
     void n1_is_0(struct Opcode opcode);
