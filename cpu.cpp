@@ -43,22 +43,22 @@ void Chip8CPU::execute(struct Opcode opcode)
 {
     using std::placeholders::_1;
     std::array<std::function<void(struct Opcode)>, 16> n1_funcs = {
-        std::bind(&Chip8CPU::n1_is_0, *this, _1),
-        std::bind(&Chip8CPU::n1_is_1, *this, _1),
-        std::bind(&Chip8CPU::n1_is_2, *this, _1),
-        std::bind(&Chip8CPU::n1_is_3, *this, _1),
-        std::bind(&Chip8CPU::n1_is_4, *this, _1),
-        std::bind(&Chip8CPU::n1_is_5, *this, _1),
-        std::bind(&Chip8CPU::n1_is_6, *this, _1),
-        std::bind(&Chip8CPU::n1_is_7, *this, _1),
-        std::bind(&Chip8CPU::n1_is_8, *this, _1),
-        std::bind(&Chip8CPU::n1_is_9, *this, _1),
-        std::bind(&Chip8CPU::n1_is_A, *this, _1),
-        std::bind(&Chip8CPU::n1_is_B, *this, _1),
-        std::bind(&Chip8CPU::n1_is_C, *this, _1),
-        std::bind(&Chip8CPU::n1_is_D, *this, _1),
-        std::bind(&Chip8CPU::n1_is_E, *this, _1),
-        std::bind(&Chip8CPU::n1_is_F, *this, _1),
+        std::bind(&Chip8CPU::n1_is_0, this, _1),
+        std::bind(&Chip8CPU::n1_is_1, this, _1),
+        std::bind(&Chip8CPU::n1_is_2, this, _1),
+        std::bind(&Chip8CPU::n1_is_3, this, _1),
+        std::bind(&Chip8CPU::n1_is_4, this, _1),
+        std::bind(&Chip8CPU::n1_is_5, this, _1),
+        std::bind(&Chip8CPU::n1_is_6, this, _1),
+        std::bind(&Chip8CPU::n1_is_7, this, _1),
+        std::bind(&Chip8CPU::n1_is_8, this, _1),
+        std::bind(&Chip8CPU::n1_is_9, this, _1),
+        std::bind(&Chip8CPU::n1_is_A, this, _1),
+        std::bind(&Chip8CPU::n1_is_B, this, _1),
+        std::bind(&Chip8CPU::n1_is_C, this, _1),
+        std::bind(&Chip8CPU::n1_is_D, this, _1),
+        std::bind(&Chip8CPU::n1_is_E, this, _1),
+        std::bind(&Chip8CPU::n1_is_F, this, _1),
     };
 
     if(opcode.n1 > 0xF)
