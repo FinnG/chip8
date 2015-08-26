@@ -17,8 +17,8 @@ int main()
 
     /* Write a (very simple!) program into ram */
     ram.write_instruction(0x200, 0xF00A);
-    ram.write_instruction(0x201, 0xF029);
-    ram.write_instruction(0x202, 0xD005);
+    ram.write_instruction(0x202, 0xF029);
+    ram.write_instruction(0x204, 0xD005);
 
     sf::RenderWindow window(sf::VideoMode(800, 600), "Chip8");
     while(window.isOpen()) {
