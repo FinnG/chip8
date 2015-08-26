@@ -1,8 +1,10 @@
 #include <array>
 
+#include <SFML/Window.hpp>
+
 struct Registers
 {
-    std::array<int8_t, 16> V;
+    std::array<uint8_t, 16> V;
     int16_t I;
     int8_t delay;
     int8_t sound;
@@ -63,4 +65,8 @@ private:
     void n1_is_D(struct Opcode opcode);
     void n1_is_E(struct Opcode opcode);
     void n1_is_F(struct Opcode opcode);
+
+    void block_until_input(sf::Keyboard::Key key);
+    sf::Keyboard::Key char_to_key(uint8_t c);
+
 };

@@ -4,10 +4,13 @@
 #include <iostream>
 #include <cassert>
 #include <random>
+#include <thread>
 
 #include "cpu.hpp"
 #include "ram.hpp"
 #include "display.hpp"
+
+
 
 #define V0 regs.V[0x0]
 #define V1 regs.V[0x1]
@@ -258,6 +261,8 @@ void Chip8CPU::n1_is_E(struct Opcode opcode)
     switch(opcode.n34) {
     case 0x9E: /* Ex9E = SKP Vx */
         /* TODO: need input for this */
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+            PC += 2;
         break;
     case 0xA1: /* ExA1 = SKNP Vx */
         /* TODO: need input for this */
@@ -277,7 +282,7 @@ void Chip8CPU::n1_is_F(struct Opcode opcode)
         regs.V[opcode.n2] = regs.delay;
         break;
     case 0x0A: /* Fx0A = LD Vx, K */
-        /* TODO: requires input */
+        block_until_input(char_to_key(regs.V[opcode.n2]));
         break;
     case 0x15: /* Fx15 = LD DT, Vx */
         regs.delay = regs.V[opcode.n2];
@@ -302,6 +307,37 @@ void Chip8CPU::n1_is_F(struct Opcode opcode)
         break;
     }    
 
+}
+
+void Chip8CPU::block_until_input(sf::Keyboard::Key key)
+{
+    std::cout << "blocking" <<std::endl;
+    while(!sf::Keyboard::isKeyPressed(key)) {
+        std::this_thread::yield();
+    }
+}
+
+sf::Keyboard::Key Chip8CPU::char_to_key(uint8_t c)
+{
+    switch(c) {
+    case 0x0: return sf::Keyboard::Num0;
+    case 0x1: return sf::Keyboard::Num1;
+    case 0x2: return sf::Keyboard::Num2;
+    case 0x3: return sf::Keyboard::Num3;
+    case 0x4: return sf::Keyboard::Num4;
+    case 0x5: return sf::Keyboard::Num5;
+    case 0x6: return sf::Keyboard::Num6;
+    case 0x7: return sf::Keyboard::Num7;
+    case 0x8: return sf::Keyboard::Num8;
+    case 0x9: return sf::Keyboard::Num9;
+    case 0xA: return sf::Keyboard::A;
+    case 0xB: return sf::Keyboard::B;
+    case 0xC: return sf::Keyboard::C;
+    case 0xD: return sf::Keyboard::D;
+    case 0xE: return sf::Keyboard::E;
+    case 0xF: return sf::Keyboard::F;
+    default: return sf::Keyboard::Unknown;
+    }
 }
 
 void Chip8CPU::unknown_opcode(struct Opcode opcode)
