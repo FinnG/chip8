@@ -1,3 +1,6 @@
+#ifndef DISPLAY_HPP
+#define DISPLAY_HPP
+
 #include <array>
 #include <iostream>
 
@@ -43,3 +46,5 @@ private:
             {{0xF0, 0x80, 0xF0, 0x80, 0x80}}, /* F */
         }};
 };
+
+#endif

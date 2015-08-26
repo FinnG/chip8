@@ -1,3 +1,6 @@
+#ifndef CPU_HPP
+#define CPU_HPP
+
 #include <array>
 
 #include <SFML/Window.hpp>
@@ -93,3 +96,5 @@ private:
         sf::Keyboard::F,
     };
 };
+
+#endif

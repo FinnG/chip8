@@ -1,3 +1,6 @@
+#ifndef RAM_HPP
+#define RAM_HPP
+
 #include <array>
 
 class Chip8Ram
@@ -14,3 +17,5 @@ private:
     static const int RAM_SIZE = 4096;
     std::array<int8_t, RAM_SIZE> ram;
 };
+
+#endif

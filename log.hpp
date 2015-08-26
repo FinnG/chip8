@@ -18,52 +18,47 @@ inline std::string className(const std::string& prettyFunction)
 
 #define __CLASS_NAME__ className(__PRETTY_FUNCTION__)
 
-#define LOG() Log().get(__CLASS_NAME__)
+#define LOG(level) Log().get(__CLASS_NAME__, LogLevel::level)
 
-enum class LogCat
+enum class LogLevel
 {
-    CPU,
     ERROR,
+    WARN,
     INFO,
-    WARNING,
-    DISPLAY,
-    RAM,
-    OTHER,
 };
-
-// std::string logcat_to_str(LogCat cat)
-// {
-//     switch(cat) {
-//     case LogCat::CPU: return "CPU";
-//     case LogCat::ERROR: return "ERROR";
-//     case LogCat::INFO: return "INFO";
-//     case LogCat::WARNING: return "WARNING";
-//     case LogCat::DISPLAY: return "DISPLAY";
-//     case LogCat::RAM: return "RAM";
-//     case LogCat::OTHER: return "OTHER";
-//     default: return "Unknown";
-//     }
-// }
 
 class Log
 {    
 public:    
-    Log() {}
+    Log()
+    {
+        current_level = LogLevel::WARN;
+    }
 
     ~Log()
     {
         std::cerr << os.str() << std::endl;
     }
-            
-    
-    std::ostringstream& get(const std::string& where)
+
+    std::string level_to_str(LogLevel level)
     {
-        os << where << ": ";
+        switch(level) {
+        case LogLevel::ERROR: return "ERROR";
+        case LogLevel::INFO: return "INFO";
+        case LogLevel::WARN: return "WARN";
+        default: return "Unknown";
+        }
+    }
+
+    std::ostringstream& get(const std::string& where, LogLevel level)
+    {
+        os << level_to_str(level) << " - " << where << ": ";
         return os;
     }
 
 private:
     std::ostringstream os;
+    LogLevel current_level;
 };
 
 #endif

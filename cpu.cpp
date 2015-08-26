@@ -387,7 +387,7 @@ struct Opcode Chip8CPU::get_next_instruction()
 {
     struct Opcode op;
     op.n1234 = ram.read_instruction(regs.pc);
-    LOG() << "Read instruction: 0x" << std::hex << op.n1234
+    LOG(INFO) << "Read instruction: 0x" << std::hex << op.n1234
         << " from addr: 0x" << regs.pc;
     return op;
 }

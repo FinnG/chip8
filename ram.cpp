@@ -6,7 +6,7 @@
 Chip8Ram::Chip8Ram()
 {
     /* Init the ram by zeroing out all the memory */
-    LOG() << "Start up, clearing memory";
+    LOG(INFO) << "Start up, clearing memory";
     for(int8_t byte : ram) {
         byte = 0;
     }
