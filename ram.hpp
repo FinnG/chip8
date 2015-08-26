@@ -12,10 +12,12 @@ public:
 
     uint16_t read_instruction(uint16_t addr);
     void write_instruction(uint16_t addr, uint16_t instr);
-    
+
+    void load_ram(const std::string& filename);
+
 private:
-    static const int RAM_SIZE = 4096;
-    std::array<int8_t, RAM_SIZE> ram;
+    static const int ram_size = 4096;
+    std::array<int8_t, ram_size> ram;
 };
 
 #endif

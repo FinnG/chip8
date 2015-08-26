@@ -75,6 +75,7 @@ void Chip8CPU::n1_is_0(struct Opcode opcode)
 {
     switch(opcode.n1234) {
     case 0x0000: /* NOP - NOT DEFINED IN SPEC! */
+        exit(0);
         break;
     case 0x00E0: /* CLS */
         display.clear();
