@@ -39,7 +39,7 @@ Chip8CPU::Chip8CPU(Chip8Ram& ram, Chip8Display& display)
     for(int8_t reg : regs.V)
         reg = 0;
 
-    PC = 0;
+    PC = 0x200;
     SP = 0;
 }
 
@@ -74,8 +74,11 @@ void Chip8CPU::execute(struct Opcode opcode)
 void Chip8CPU::n1_is_0(struct Opcode opcode)
 {
     switch(opcode.n1234) {
+    case 0x0000: /* NOP - NOT DEFINED IN SPEC! */
+        break;
     case 0x00E0: /* CLS */
-        display.clear();        
+        display.clear();
+        PC += 2;
     case 0x00EE: /* RET */
         PC = SP;
         SP--;
@@ -109,8 +112,12 @@ void Chip8CPU::n1_is_3(struct Opcode opcode)
     assert(opcode.n1 == 3);
 
     /* 3xkk = SE Vx, byte */
-    if(regs.V[opcode.n2] == opcode.n34)
-        PC += 2;
+    if(regs.V[opcode.n2] == opcode.n34) {
+        ;
+        return;
+    }
+
+    PC += 2;
 }
 
 void Chip8CPU::n1_is_4(struct Opcode opcode)
@@ -118,8 +125,12 @@ void Chip8CPU::n1_is_4(struct Opcode opcode)
     assert(opcode.n1 == 4);
 
     /* 4xkk = SNE Vx, byte */
-    if(regs.V[opcode.n2] != opcode.n34)
-       PC += 2;
+    if(regs.V[opcode.n2] != opcode.n34) {
+       PC += 4;
+       return;
+    }
+
+    PC += 2;
 }
 
 void Chip8CPU::n1_is_5(struct Opcode opcode)
@@ -128,8 +139,11 @@ void Chip8CPU::n1_is_5(struct Opcode opcode)
     assert(opcode.n4 == 0);
 
     /* 5xy0 = SE Vx, Vy */
-    if(regs.V[opcode.n2] == regs.V[opcode.n3])
-        PC += 2;
+    if(regs.V[opcode.n2] == regs.V[opcode.n3]) {
+        PC += 4;
+    }
+
+    PC += 2;
 }
 
 void Chip8CPU::n1_is_6(struct Opcode opcode)
@@ -138,6 +152,7 @@ void Chip8CPU::n1_is_6(struct Opcode opcode)
 
     /* 6xkk = LD Vx, byte */
     regs.V[opcode.n2] = opcode.n34;
+    PC += 2;
 }
 
 void Chip8CPU::n1_is_7(struct Opcode opcode)
@@ -146,6 +161,7 @@ void Chip8CPU::n1_is_7(struct Opcode opcode)
 
     /* 7xkk = ADD Vx, byte */
     regs.V[opcode.n2] = regs.V[opcode.n2] + opcode.n34;
+    PC += 2;
 }
 
 void Chip8CPU::n1_is_8(struct Opcode opcode)
@@ -204,6 +220,8 @@ void Chip8CPU::n1_is_8(struct Opcode opcode)
         unknown_opcode(opcode);
         break;        
     }
+
+    PC += 2;
 }
 
 void Chip8CPU::n1_is_9(struct Opcode opcode)
@@ -212,8 +230,11 @@ void Chip8CPU::n1_is_9(struct Opcode opcode)
     assert(opcode.n4 == 0x0);
     
     /* 9xy0 = SNE Vx, Vy */
-    if(regs.V[opcode.n2] != regs.V[opcode.n3])
-        PC += 2;
+    if(regs.V[opcode.n2] != regs.V[opcode.n3]) {
+        PC += 4;
+    }
+
+    PC += 2;
 }
 
 void Chip8CPU::n1_is_A(struct Opcode opcode)
@@ -222,6 +243,7 @@ void Chip8CPU::n1_is_A(struct Opcode opcode)
 
     /* Annn = LD I, addr */
     I = opcode.n234;
+    PC += 2;
 }
 
 void Chip8CPU::n1_is_B(struct Opcode opcode)
@@ -230,6 +252,7 @@ void Chip8CPU::n1_is_B(struct Opcode opcode)
 
     /* Bnnn = JP V0, addr */
     PC = opcode.n234 + V0;
+    PC += 2;
 }
 
 void Chip8CPU::n1_is_C(struct Opcode opcode)
@@ -241,6 +264,7 @@ void Chip8CPU::n1_is_C(struct Opcode opcode)
     rng.seed(time(NULL));
     std::uniform_int_distribution<int8_t> int_dist;
     regs.V[opcode.n2] = int_dist(rng) & opcode.n34;
+    PC += 2;
 }
 
 void Chip8CPU::n1_is_D(struct Opcode opcode)
@@ -253,6 +277,8 @@ void Chip8CPU::n1_is_D(struct Opcode opcode)
     uint8_t len = opcode.n4;
 
     display.draw_sprite(&ram[I], len, x, y);
+
+    PC += 2;
 }
 
 void Chip8CPU::n1_is_E(struct Opcode opcode)
@@ -261,16 +287,23 @@ void Chip8CPU::n1_is_E(struct Opcode opcode)
 
     switch(opcode.n34) {
     case 0x9E: /* Ex9E = SKP Vx */
-        if(sf::Keyboard::isKeyPressed(allowed_keys[opcode.n2]))
-            PC += 2;
+        if(sf::Keyboard::isKeyPressed(allowed_keys[opcode.n2])) {
+            PC += 4;
+            return;
+        }
         break;
     case 0xA1: /* ExA1 = SKNP Vx */
-        if(sf::Keyboard::isKeyPressed(allowed_keys[opcode.n2]))
+        if(sf::Keyboard::isKeyPressed(allowed_keys[opcode.n2])) {
+            PC += 4;
+            return;
+        }
         break;
     default:
         unknown_opcode(opcode);
         break;
-    }    
+    }
+
+    PC += 2;
 }
 
 void Chip8CPU::n1_is_F(struct Opcode opcode)
@@ -323,8 +356,9 @@ void Chip8CPU::n1_is_F(struct Opcode opcode)
     default:
         unknown_opcode(opcode);
         break;
-    }    
+    }   
 
+    PC += 2;
 }
 
 void Chip8CPU::unknown_opcode(struct Opcode opcode)
@@ -346,5 +380,12 @@ bool Chip8CPU::is_blocked()
     }
     
     return blocked;
+}
+
+struct Opcode Chip8CPU::get_next_instruction()
+{
+    struct Opcode op;
+    op.n1234 = ram.read_instruction(regs.pc);
+    return op;
 }
 

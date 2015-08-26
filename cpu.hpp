@@ -43,6 +43,7 @@ public:
     Chip8CPU(Chip8Ram& ram, Chip8Display& display);
     void execute(struct Opcode opcode);
     bool is_blocked();
+    struct Opcode get_next_instruction();
     
 private:
     struct Registers regs;

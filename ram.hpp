@@ -6,6 +6,9 @@ public:
     Chip8Ram();
     int8_t& operator[](std::size_t i);
     const int8_t& operator[](std::size_t i) const;
+
+    uint16_t read_instruction(uint16_t addr);
+    void write_instruction(uint16_t addr, uint16_t instr);
     
 private:
     static const int RAM_SIZE = 4096;

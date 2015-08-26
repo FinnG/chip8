@@ -15,13 +15,10 @@ int main()
     Chip8Display display(ram, 800, 600);
     Chip8CPU cpu(ram, display);
 
-    struct Opcode op;
-    op.n1234 = 0x600F;
-    cpu.execute(op);
-    op.n1234 = 0xF029;
-    cpu.execute(op);
-    op.n1234 = 0xD005;
-    cpu.execute(op);
+    /* Write a (very simple!) program into ram */
+    ram.write_instruction(0x200, 0xF00A);
+    ram.write_instruction(0x201, 0xF029);
+    ram.write_instruction(0x202, 0xD005);
 
     sf::RenderWindow window(sf::VideoMode(800, 600), "Chip8");
     while(window.isOpen()) {
@@ -34,9 +31,8 @@ int main()
         if(cpu.is_blocked()) {
             continue;
         }
-        LOG() << "CPU unblocked, waiting for key 0";
-        op.n1234 = 0xF00A;
-        cpu.execute(op);
+
+        cpu.execute(cpu.get_next_instruction());
 
         display.draw(window);
     }
