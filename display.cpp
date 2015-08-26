@@ -4,20 +4,31 @@
 #include <cassert>
 #include <cstring>
 
-
-Chip8Display::Chip8Display(Chip8Ram& ram) : ram(ram)
+Chip8Display::Chip8Display(Chip8Ram& ram)
+    : ram(ram), window(sf::VideoMode(screen_width, screen_height), "Chip8")
 {
     /* Initialise all pixels to blank */
     for(uint8_t y = 0; y < height; y++) {
         for(uint8_t x = 0; x < width; x++) {
-            pixels[x][y] = false;
+            pixel_is_set[x][y] = false;
         }
     }
-    
+
+    /* Initialise all rects to right size and position */
+    uint32_t rect_width = screen_width / width;
+    uint32_t rect_height = screen_height / height;
+    for(uint8_t y = 0; y < height; y++) {
+        for(uint8_t x = 0; x < width; x++) {
+            pixels[x][y].setPosition(x * rect_width, y * rect_height);
+            pixels[x][y].setSize(sf::Vector2f(rect_width, rect_height));
+        }
+    }
+
     /* Copy the hex charset into the correct area of memory */
     for(uint8_t i = 0; i < hex_charset.size(); i++) {
         int16_t location = i * hex_charset[i].size();
-        std::memcpy((void*)&ram[location], (void*)hex_charset[i].data(), hex_charset[i].size());
+        std::memcpy((void*)&ram[location], (void*)hex_charset[i].data(),
+                    hex_charset[i].size());
         hex_locations[i] = location;
     }
 }
@@ -30,18 +41,27 @@ int16_t Chip8Display::hex_location(int8_t hex_char)
 
 void Chip8Display::draw()
 {
-    initscr();
+    if(!window.isOpen())
+        return;
+
+    sf::Event event;
+    while(window.pollEvent(event)) {
+        if(event.type == sf::Event::Closed)
+            window.close();
+    }
+
+    window.clear(sf::Color::Black);
+    
     for(uint8_t y = 0; y < height; y++) {
         for(uint8_t x = 0; x < width; x++) {
-            if(!pixels[x][y])
+            if(!pixel_is_set[x][y])
                 continue;
 
-            mvprintw(y, x, "X");
+            window.draw(pixels[x][y]);
         }
     }
-    refresh();
-    getch();
-    endwin();
+
+    window.display();
 }
 
 void Chip8Display::draw_sprite(int8_t* sprite_start, uint8_t len, uint8_t x, uint8_t y)
@@ -53,7 +73,7 @@ void Chip8Display::draw_sprite(int8_t* sprite_start, uint8_t len, uint8_t x, uin
             uint8_t mask = 0b10000000 >> i;
             bool set = mask & *sprite_start;
 
-            pixels[x + i][y + j] ^= set;
+            pixel_is_set[x + i][y + j] ^= set;
         }
 
         sprite_start++;

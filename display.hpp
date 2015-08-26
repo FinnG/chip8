@@ -1,6 +1,7 @@
 #include <array>
 #include <iostream>
-#include <ncurses.h>
+
+#include <SFML/Graphics.hpp>
 
 class Chip8Ram;
 
@@ -15,14 +16,14 @@ public:
 private:
     static const int8_t width = 64;
     static const int8_t height = 32;
+    static const uint32_t screen_width = 800;
+    static const uint32_t screen_height = 600;
 
     Chip8Ram& ram;
-
-    std::array<std::array<bool, height>, width> pixels;
-
+    sf::RenderWindow window;
+    std::array<std::array<bool, height>, width> pixel_is_set;
+    std::array<std::array<sf::RectangleShape, height>, width> pixels;
     std::array<int16_t, 16> hex_locations;
-
-    /* TODO: this data should be stored in the correct part of the Chip8 mem */
     const std::array<std::array<uint8_t, 5>, 16> hex_charset = {{
             {{0xF0, 0x90, 0x90, 0x90, 0xF0}}, /* 0 */
             {{0x20, 0x60, 0x20, 0x20, 0x70}}, /* 1 */

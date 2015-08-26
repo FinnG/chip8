@@ -1,7 +1,7 @@
 
 
 SOURCES=ram.cpp display.cpp cpu.cpp main.cpp
-LIBS=-lncurses -lsfml-window
+LIBS=-lsfml-graphics -lsfml-window -lsfml-system
 
 default: all
 
