@@ -115,7 +115,7 @@ void Chip8CPU::n1_is_3(struct Opcode opcode)
 
     /* 3xkk = SE Vx, byte */
     if(regs.V[opcode.n2] == opcode.n34) {
-        ;
+        PC += 4;
         return;
     }
 
