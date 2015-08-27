@@ -77,7 +77,7 @@ private:
     void n1_is_E(struct Opcode opcode);
     void n1_is_F(struct Opcode opcode);
 
-    std::array<sf::Keyboard::Key, 16> allowed_keys = {
+    std::array<sf::Keyboard::Key, 16> allowed_keys = {{
         sf::Keyboard::Num0,
         sf::Keyboard::Num1,
         sf::Keyboard::Num2,
@@ -94,7 +94,7 @@ private:
         sf::Keyboard::D,
         sf::Keyboard::E,
         sf::Keyboard::F,
-    };
+    }};
 };
 
 #endif
