@@ -62,14 +62,12 @@ void Chip8Display::draw(sf::RenderWindow& window)
 
 void Chip8Display::draw_sprite(int8_t* sprite_start, uint8_t len, uint8_t x, uint8_t y)
 {
-    /* TODO: The spec says sprite drawing must wrap, this just breaks! */
-
     for(uint8_t j = 0; j < len; j++) {
         for(uint8_t i = 0; i < 8; i++) {
             uint8_t mask = 0b10000000 >> i;
             bool set = mask & *sprite_start;
 
-            pixel_is_set[x + i][y + j] ^= set;
+            pixel_is_set[(x + i) % width][(y + j) % height] ^= set;
         }
 
         sprite_start++;
