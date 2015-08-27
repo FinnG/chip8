@@ -400,8 +400,10 @@ void Chip8CPU::update_timers()
     ms_since_last_tick += ms;
 
     while(ms_since_last_tick >= 16) {
-        regs.delay -= 1;
-        regs.sound -= 1;
+        if(regs.delay != 0)
+            regs.delay -= 1;
+        if(regs.sound != 0)
+            regs.sound -= 1;
         ms_since_last_tick -= 16;
     }
 }
