@@ -105,7 +105,7 @@ void Chip8CPU::n1_is_2(struct Opcode opcode)
 
     /* 2nnn = CALL addr */
     SP += 2;
-    ram.write_instruction(PC, SP);
+    ram.write_instruction(SP, PC);
     PC = opcode.n234;
 }
 
