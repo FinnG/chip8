@@ -82,8 +82,8 @@ void Chip8CPU::n1_is_0(struct Opcode opcode)
         PC += 2;
         break;
     case 0x00EE: /* RET */
-        PC = SP;
-        SP--;
+        PC = ram.read_instruction(SP);
+        SP -= 2;
         break;
     default:
         unknown_opcode(opcode);
@@ -104,8 +104,8 @@ void Chip8CPU::n1_is_2(struct Opcode opcode)
     assert(opcode.n1 == 2);
 
     /* 2nnn = CALL addr */
-    SP++;
-    SP = PC;
+    SP += 2;
+    ram.write_instruction(PC, SP);
     PC = opcode.n234;
 }
 
