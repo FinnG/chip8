@@ -46,7 +46,8 @@ int main(int argc, const char** argv)
 
         cpu.execute(cpu.get_next_instruction());
 
-        display.draw(window);
+        if(display.needs_update())
+            display.draw(window);
     }
     
     return 0;

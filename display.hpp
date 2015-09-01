@@ -16,12 +16,15 @@ public:
     void draw(sf::RenderWindow& window);
     void draw_sprite(int8_t* sprite_start, uint8_t len, uint8_t x, uint8_t y);
     int16_t hex_location(int8_t hex_char);
+    bool needs_update();
 
 private:
     static const int8_t width = 64;
     static const int8_t height = 32;
     uint32_t screen_width = 800;
     uint32_t screen_height = 600;
+
+    bool up_to_date;
 
     Chip8Ram& ram;
     std::array<std::array<bool, height>, width> pixel_is_set;

@@ -5,7 +5,7 @@
 #include <cstring>
 
 Chip8Display::Chip8Display(Chip8Ram& ram, uint32_t screen_width, uint32_t screen_height)
-    : ram(ram), screen_width(screen_width), screen_height(screen_height)
+    : ram(ram), screen_width(screen_width), screen_height(screen_height), up_to_date(false)
 {
     clear();
 
@@ -21,7 +21,7 @@ Chip8Display::Chip8Display(Chip8Ram& ram, uint32_t screen_width, uint32_t screen
 
     /* Copy the hex charset into the correct area of memory */
     for(uint8_t i = 0; i < hex_charset.size(); i++) {
-        int16_t location = i * hex_charset[i].size();
+        int16_t location = i * hex_charset[i].size() + 0x100;
         std::memcpy((void*)&ram[location], (void*)hex_charset[i].data(),
                     hex_charset[i].size());
         hex_locations[i] = location;
@@ -30,6 +30,8 @@ Chip8Display::Chip8Display(Chip8Ram& ram, uint32_t screen_width, uint32_t screen
 
 void Chip8Display::clear()
 {
+    up_to_date = false;
+    
     /* Initialise all pixels to blank */
     for(uint8_t y = 0; y < height; y++) {
         for(uint8_t x = 0; x < width; x++) {
@@ -41,11 +43,13 @@ void Chip8Display::clear()
 int16_t Chip8Display::hex_location(int8_t hex_char)
 {
     assert(hex_char <= 0xF);
-    return hex_locations[hex_char];
+    return hex_locations[hex_char] + 0x100;
 }
 
 void Chip8Display::draw(sf::RenderWindow& window)
 {
+    up_to_date = true;
+    
     window.clear(sf::Color::Black);
     
     for(uint8_t y = 0; y < height; y++) {
@@ -62,6 +66,8 @@ void Chip8Display::draw(sf::RenderWindow& window)
 
 void Chip8Display::draw_sprite(int8_t* sprite_start, uint8_t len, uint8_t x, uint8_t y)
 {
+    up_to_date = false;
+    
     for(uint8_t j = 0; j < len; j++) {
         for(uint8_t i = 0; i < 8; i++) {
             uint8_t mask = 0b10000000 >> i;
@@ -72,4 +78,9 @@ void Chip8Display::draw_sprite(int8_t* sprite_start, uint8_t len, uint8_t x, uin
 
         sprite_start++;
     }
+}
+
+bool Chip8Display::needs_update()
+{
+    return !up_to_date;
 }
