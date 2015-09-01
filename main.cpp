@@ -3,16 +3,22 @@
 #include <iostream>
 #include <array>
 #include <cstdint>
+#include <string>
 
 #include "ram.hpp"
 #include "display.hpp"
 #include "cpu.hpp"
 #include "log.hpp"
 
-int main()
+int main(int argc, const char** argv)
 {
+    if(argc != 2) {
+        LOG(ERROR) << "Incorrect arguments given. Usage " << argv[0]
+                   << " [ROM]";
+        exit(1);
+    }
     Chip8Ram ram;
-    ram.load_ram("VERS");
+    ram.load_ram(std::string(argv[1]));
     Chip8Display display(ram, 800, 600);
     Chip8CPU cpu(ram, display);
 
