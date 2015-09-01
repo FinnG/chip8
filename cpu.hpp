@@ -61,6 +61,8 @@ private:
 
     sf::Clock clock;
     uint32_t ms_since_last_tick;
+    std::mt19937 rng;
+
     
     void unknown_opcode(struct Opcode opcode);
     void n1_is_0(struct Opcode opcode);

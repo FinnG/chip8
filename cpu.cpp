@@ -34,8 +34,10 @@
 #define I  regs.I
 
 Chip8CPU::Chip8CPU(Chip8Ram& ram, Chip8Display& display)
-    : ram(ram), display(display), blocked(false)
+: ram(ram), display(display), blocked(false)
 {
+    rng.seed(time(NULL));
+    
     for(int8_t reg : regs.V)
         reg = 0;
 
@@ -306,8 +308,6 @@ void Chip8CPU::n1_is_C(struct Opcode opcode)
     /* Cxkk = RND Vx, byte */
     LOG(DECODE) << "RND V" << std::hex << (uint16_t)opcode.n2
                 << ", 0x" << (uint16_t)opcode.n34;
-    std::mt19937 rng;
-    rng.seed(time(NULL));
     std::uniform_int_distribution<int8_t> int_dist;
     regs.V[opcode.n2] = int_dist(rng) & opcode.n34;
     PC += 2;
