@@ -25,13 +25,9 @@ const int8_t& Chip8Ram::operator[](std::size_t i) const
 
 uint16_t Chip8Ram::read_instruction(uint16_t addr)
 {
-    LOG(INFO) << "addr 0x" << std::hex << addr;
     uint16_t most = ram[addr];
-    LOG(INFO) << "most 0x" << std::hex << most;
-        uint16_t least = 0x00FF & ram[addr + 1];
-        LOG(INFO) << "least 0x" << std::hex << least;
+    uint16_t least = 0x00FF & ram[addr + 1];
     uint16_t result = (most << 8) | least;
-    LOG(INFO) << "result 0x" << std::hex << result;
     return result;
 }
 

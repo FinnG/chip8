@@ -2,6 +2,7 @@
 #define CPU_HPP
 
 #include <array>
+#include <vector>
 
 #include <SFML/Window.hpp>
 
@@ -56,6 +57,8 @@ private:
     uint8_t reg_to_set;
     bool blocked;
 
+    std::vector<uint16_t> stack;
+
     sf::Clock clock;
     uint32_t ms_since_last_tick;
     
@@ -77,6 +80,7 @@ private:
     void n1_is_E(struct Opcode opcode);
     void n1_is_F(struct Opcode opcode);
 
+    /* Not sure this is the right place for this... but it will do for now */
     std::array<sf::Keyboard::Key, 16> allowed_keys = {{
         sf::Keyboard::Num0,
         sf::Keyboard::Num1,

@@ -25,6 +25,7 @@ enum class LogLevel
     ERROR,
     WARN,
     INFO,
+    DECODE,
 };
 
 class Log
@@ -46,6 +47,7 @@ public:
         case LogLevel::ERROR: return "ERROR";
         case LogLevel::INFO: return "INFO";
         case LogLevel::WARN: return "WARN";
+        case LogLevel::DECODE: return "DECODE";
         default: return "Unknown";
         }
     }
